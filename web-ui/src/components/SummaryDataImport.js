@@ -23,10 +23,10 @@ const SummaryDataImport = () => {
     <React.Fragment>
       <Title isGutter={true}>Total Data Imported</Title>
       <Typography component="p" variant="h4" className={classes.maindata}>
-        30,024
+        20,000
       </Typography>
       <Typography color="textSecondary" className={classes.depositContext}>
-        till 23 Sepember, 2020
+        since November, 2020
       </Typography>
       <div>
         <Link color="primary" href="#" onClick={preventDefault}>

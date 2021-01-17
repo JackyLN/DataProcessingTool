@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const data = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Auguest','September'],
+  labels: ['Nov-2020', 'Dec-2020', 'Jan-2021', 'Feb-2021', 'March-2021', 'Apr-2021', 'May-2021', 'Jun-2021','Jul-2021'],
   datasets: [
     {
       label: 'Dataset import',

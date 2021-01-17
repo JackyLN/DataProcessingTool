@@ -101,7 +101,7 @@ const Upload = () => {
   const [data, setData] = useState([]);
 
   //For pagination
-  const [rowsPerPage, setRowsPerPage] = useState(30);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
   const [displayPageData, setDisplayPageData] = useState([]);
 
@@ -163,77 +163,26 @@ const Upload = () => {
       header: true,
       skipEmptyLines: true,
       newline: "",
-      /* Further implementation -> using step
-      step: function(results, parser) {
-
-        if(columns.length ==0) {
-          let columns = [];
-          results.meta["fields"].map((d, key) => {
-            columns.push({
-              id: "col_" + key,
-              index: key,
-              label: d
-            });
-          });
-          columns.splice(1, 0, "predict_label");
-          setColumns(columns);
-        }
-
-        const url = `http://localhost:2301` + `/upload`
-        window.fetch(url, {
-          method: 'post',
-          headers: { 'Content-Type':'application/json'},
-          body: JSON.stringify(results.data)
-        }).then(function(response) {
-          const status = response.status;
-          if(status != 200) {
-            console.log("Error");
-            return ;
-          } else {
-            return response.json();
-          }
-        })
-        .then(json => {
-          if(json && json.status == 200) {
-            let hash = Object.create(null);
-          
-            json.data.map(j => {
-              hash[j.id] = { id: j.id, predict_label: j.predict_label };
-            });
-            let data_with_prediction = results.data.map(r => {
-              if (hash[r.id]) {
-                r.predict_label = hash[r.id].predict_label;
-              }
-            });
-            setData([... data, data_with_prediction]);
-          } else {
-           console.log(json);
-          }
-        });
-        //console.log(results);
-        
+      delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
+      
+      error: (err, file, inputElem, reason) => {
+        // executed if an error occurs while loading the file,
+        // or if before callback aborted for some reason
+        console.log(err);
       },
-      */
       complete: (results, files) => {
 
-        let columns = [];
+        //columns handling
+        let tmpColumns = [];
         results.meta["fields"].map((d, key) => {
-          columns.push({
+          tmpColumns.push({
             id: "col_" + d,
             index: d,
             label: d
           });
         });
-        columns.splice(1, 0, {
-          id: "col_" + "predict_label",
-          label: "predict_label",
-          style: classes.predict_label
-        });
-        setColumns(columns);
+        setColumns(tmpColumns);
 
-        //const items = results.data.slice(0, 10);
-        //localStorage.setItem('mydata', JSON.stringify(items));
-        
 
         //Remove line break csv file (mixing between \r and \r\n Linux vs Windows)
         const re = /\r\n|\r|\n/;
@@ -244,79 +193,96 @@ const Upload = () => {
             break;
           }
         }
-      
-        //let count = 1;
-        //while(count < results.data.length) {
-       // while(count < 100) {
-          //let processdata = results.data.splice(count, count + 3000);
 
-          const url = config.api.API_DOMAIN + `/upload`
-          window.fetch(url, {
-            method: 'post',
-            headers: { 'Content-Type':'application/json'},
-            body: JSON.stringify(results.data)
-          }).then(function(response) {
-            const status = response.status;
-            if(status != 200) {
-              throw new Error();
-            } else {
-              return response.json();
-            }
-          })
-          .then(json => {
-            if(json) {
-              let hash = Object.create(null);
-              let data_with_prediction= [];
-              json.map(j => {
-                hash[j.id] = { predict_label: j.predict_label };
-              });
-              results.data.map(r => {
-                if (hash[r.id]) {
-                  data_with_prediction.push({
-                    ...r, predict_label: hash[r.id].predict_label
-                  });
-                }
-              });
-              return data_with_prediction;
-            } else {
-              throw new Error();
-            }
-          })
-          .then(dip => {
-            if(dip) {
-              if(data.length >0) {
-                setData(c=> [...c, dip]);
-                setDisplayPageData(calculateDisplayPageData(dip, page, rowsPerPage));
-              } else {
-                setData(dip);
-                setDisplayPageData(calculateDisplayPageData(dip, page, rowsPerPage));
-              }
-              console.log(dip);
-            } else {
-              throw new Error();
-            }
-          })
-          .finally(() => {
-            setIsBusy(false);
-            console.log('final');
-            console.log(data);
-            console.log(displayPageData);
-            console.log("end");
-          })
-          .catch(() => {
-            setOpenAlert(true);
-            setMessageAlert("Invalid file - Please upload a vectorised data");
-          })
-          //count = count + 100;
-        //}
-        
-        //setData(results.data);
-        
-        //console.log(columns);
-        //console.log(results.data);  
+        //POST DATA
+        const url = config.api.API_DOMAIN + `/client/upload`;
+        window.fetch(url, {
+          method: 'post',
+          headers: { 'Content-Type':'application/json'},
+          body: JSON.stringify(results.data)
+        }).then((response) => {
+          const status = response.status;
+          if(status != 200) {
+            throw new Error();
+          } else {
+            return response.json();
+          }
+        }).finally(() => {
+          setData(results.data);
+          setDisplayPageData(calculateDisplayPageData(results.data, page, rowsPerPage));
+          setIsBusy(false);
+        }).catch((ex) => {
+          setOpenAlert(true);
+          setMessageAlert("Invalid file - Please upload a vectorised data");
+          console.log(ex);
+        });
       }
     });
   }
+    //   complete: (results, files) => {
+        
+    //       const url = config.api.API_DOMAIN + `/client/upload`
+    //       window.fetch(url, {
+    //         method: 'post',
+    //         headers: { 'Content-Type':'application/json'},
+    //         body: JSON.stringify(results.data)
+    //       }).then(function(response) {
+    //         const status = response.status;
+    //         if(status != 200) {
+    //           throw new Error();
+    //         } else {
+    //           return response.json();
+    //         }
+    //       })
+    //       .then(json => {
+    //         if(json) {
+    //           let hash = Object.create(null);
+    //           let data_with_prediction= [];
+    //           json.map(j => {
+    //             hash[j.id] = { predict_label: j.predict_label };
+    //           });
+    //           results.data.map(r => {
+    //             if (hash[r.id]) {
+    //               data_with_prediction.push({
+    //                 ...r, predict_label: hash[r.id].predict_label
+    //               });
+    //             }
+    //           });
+    //           return data_with_prediction;
+    //         } else {
+    //           throw new Error();
+    //         }
+    //       })
+    //       .then(dip => {
+    //         if(dip) {
+    //           if(data.length >0) {
+    //             setData(c=> [...c, dip]);
+    //             setDisplayPageData(calculateDisplayPageData(dip, page, rowsPerPage));
+    //           } else {
+    //             setData(dip);
+    //             setDisplayPageData(calculateDisplayPageData(dip, page, rowsPerPage));
+    //           }
+    //           console.log(dip);
+    //         } else {
+    //           throw new Error();
+    //         }
+    //       })
+    //       .finally(() => {
+    //         setIsBusy(false);
+    //         console.log('final');
+    //         console.log(data);
+    //         console.log(displayPageData);
+    //         console.log("end");
+    //       })
+    //    
+    //       //count = count + 100;
+    //     //}
+        
+    //     //setData(results.data);
+        
+    //     //console.log(columns);
+    //     //console.log(results.data);  
+    //   }
 
   return(
     <div className={classes.root}>

@@ -59,7 +59,7 @@ const DataSetUpload = (props) => {
         </div>
         <div className={classes.displayButton}>
           {
-            open ? (<Button color='primary' onClick={handleDiaplayData}>Display data</Button>) : (<div></div>)
+            open ? (<Button color='primary' onClick={handleDiaplayData}>Process</Button>) : (<div></div>)
           }
           
         </div>
