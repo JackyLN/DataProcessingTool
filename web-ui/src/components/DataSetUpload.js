@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => createStyles({
 
 const DataSetUpload = (props) => {
 
-  const { displayData, dataFiles } = props;
+  const { displayData, dataFiles, dataDownload } = props;
 
   const classes = useStyles();
 
@@ -59,7 +59,15 @@ const DataSetUpload = (props) => {
         </div>
         <div className={classes.displayButton}>
           {
-            open ? (<Button color='primary' onClick={handleDiaplayData}>Process</Button>) : (<div></div>)
+            open ? 
+            (
+              <div>
+                <Button color='primary' onClick={handleDiaplayData}>Process</Button>
+                {
+                  
+                }
+              </div>
+            ) : (<div></div>)
           }
           
         </div>
