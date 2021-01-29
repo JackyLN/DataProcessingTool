@@ -195,14 +195,19 @@ const Upload = () => {
         }
 
         //POST DATA
-        const url = config.api.API_DOMAIN + `/client/upload`;
+        const url = config.api.API_DOMAIN + `/file/upload`;
+        const postData = {
+          file: results.data,
+          name: files.name
+        }
+
         window.fetch(url, {
           method: 'post',
           headers: { 'Content-Type':'application/json'},
-          body: JSON.stringify(results.data)
+          body: JSON.stringify(postData)
         }).then((response) => {
           const status = response.status;
-          if(status != 200) {
+          if(status !== 200) {
             throw new Error();
           } else {
             return response.json();
