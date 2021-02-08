@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { DropzoneArea } from 'material-ui-dropzone'
 import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => createStyles({
 
 const DataSetUpload = (props) => {
 
-  const { displayData, dataFiles, dataDownload } = props;
+  const { displayData, dataFiles } = props;
 
   const classes = useStyles();
 

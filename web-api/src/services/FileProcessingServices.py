@@ -1,5 +1,5 @@
 from __main__ import app
-from flask import json, request, jsonify
+from flask import json, request, jsonify, send_file
 
 import pandas as pd
 import sys
@@ -17,9 +17,23 @@ def file():
 @app.route('/file/upload', methods=['POST'])
 def upload():
   data = request.get_json()
-  convert = csv_handling(data)
+  convert = csv_handling(data, "file")
   
   return convert[0], convert[1]
+
+@app.route('/file/download')
+def file_download():
+  try:
+
+    fileName = request.args.get('file')
+
+    fullRoute = path.dirname(sys.argv[0]) + '/output' + '/' + fileName
+    return send_file(fullRoute, attachment_filename=fileName,
+                    mimetype="text/plain",
+                   as_attachment=True,
+                   conditional=False)
+  except Exception as e:
+    return {"message": e}, 400
 
 
 def csv_handling(jsonData, output="json"):
@@ -45,10 +59,10 @@ def csv_handling(jsonData, output="json"):
 
       file_out = OUTPUT_DIR + '/' + OUTPUT_FILE
       df.to_excel(file_out, index=False)
-      return {"data": file_out}, 200
+      return {"data": OUTPUT_FILE}, 200
     else:
       #return to json by default
-      result = df.to_json(orient="table")
+      result = df.to_json(orient="records")
       return {"data": result}, 200
     
   except Exception as e:
