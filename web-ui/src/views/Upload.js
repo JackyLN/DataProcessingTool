@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import clsx from 'clsx';
 import {
-  AppBar,
   Box,
-  Button,
   CssBaseline,
   Container,
-  Divider,
-  Drawer,
   Grid,
-  IconButton,
   LinearProgress,
-  List,
   Paper,
   Table,
   TableBody,
@@ -20,7 +14,6 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Toolbar
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Papa from 'papaparse';
@@ -30,6 +23,8 @@ import Copyright from '../components/Copyright';
 import HeaderDrawer from '../components/HeaderDrawer';
 import DataSetUpload from '../components/DataSetUpload';
 import AlertDialog from '../components/AlertDialog';
+import DownloadDialog from '../components/DownloadDialog';
+
 
 
 const config = require('../config');
@@ -109,6 +104,9 @@ const Upload = () => {
   const [openAlert, setOpenAlert] = useState(false);
   const [messageAlert, setMessageAlert] = useState("");
   
+  const [openDownloadAlert, setOpenDownloadAlert] = useState(false);
+  const [linkDownload, setLinkDownload] = useState("");
+  
   //const [emptyRows, setEmptyRows] = useState(0);
 
   const handleFiles = (display) => {
@@ -151,6 +149,7 @@ const Upload = () => {
 
   const handleCloseAlert = (value) => {
     setOpenAlert(false);
+    setOpenDownloadAlert(false);
   };
 
   const calculateDisplayPageData = (_data, _page, _rowsPerPage) => {
@@ -212,10 +211,14 @@ const Upload = () => {
           } else {
             return response.json();
           }
+        }).then((link) => {
+          setOpenDownloadAlert(true);
+          setLinkDownload(link.data);
         }).finally(() => {
           setData(results.data);
           setDisplayPageData(calculateDisplayPageData(results.data, page, rowsPerPage));
           setIsBusy(false);
+
         }).catch((ex) => {
           setOpenAlert(true);
           setMessageAlert("Invalid file - Please upload a vectorised data");
@@ -369,6 +372,7 @@ const Upload = () => {
         </Box>
         
         <AlertDialog open={openAlert} onClose={handleCloseAlert} message={messageAlert} />
+        <DownloadDialog open={openDownloadAlert} onClose={handleCloseAlert} link={linkDownload} />
       </main>
     </div>
   )

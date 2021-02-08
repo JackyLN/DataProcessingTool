@@ -15,7 +15,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import CloudDownloadOutlinedIcon from '@material-ui/icons/CloudDownloadOutlined';
 
 
 import Title from './Title';
