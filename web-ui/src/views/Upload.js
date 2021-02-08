@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import clsx from 'clsx';
 import {
   Box,
@@ -227,70 +227,6 @@ const Upload = () => {
       }
     });
   }
-    //   complete: (results, files) => {
-        
-    //       const url = config.api.API_DOMAIN + `/client/upload`
-    //       window.fetch(url, {
-    //         method: 'post',
-    //         headers: { 'Content-Type':'application/json'},
-    //         body: JSON.stringify(results.data)
-    //       }).then(function(response) {
-    //         const status = response.status;
-    //         if(status != 200) {
-    //           throw new Error();
-    //         } else {
-    //           return response.json();
-    //         }
-    //       })
-    //       .then(json => {
-    //         if(json) {
-    //           let hash = Object.create(null);
-    //           let data_with_prediction= [];
-    //           json.map(j => {
-    //             hash[j.id] = { predict_label: j.predict_label };
-    //           });
-    //           results.data.map(r => {
-    //             if (hash[r.id]) {
-    //               data_with_prediction.push({
-    //                 ...r, predict_label: hash[r.id].predict_label
-    //               });
-    //             }
-    //           });
-    //           return data_with_prediction;
-    //         } else {
-    //           throw new Error();
-    //         }
-    //       })
-    //       .then(dip => {
-    //         if(dip) {
-    //           if(data.length >0) {
-    //             setData(c=> [...c, dip]);
-    //             setDisplayPageData(calculateDisplayPageData(dip, page, rowsPerPage));
-    //           } else {
-    //             setData(dip);
-    //             setDisplayPageData(calculateDisplayPageData(dip, page, rowsPerPage));
-    //           }
-    //           console.log(dip);
-    //         } else {
-    //           throw new Error();
-    //         }
-    //       })
-    //       .finally(() => {
-    //         setIsBusy(false);
-    //         console.log('final');
-    //         console.log(data);
-    //         console.log(displayPageData);
-    //         console.log("end");
-    //       })
-    //    
-    //       //count = count + 100;
-    //     //}
-        
-    //     //setData(results.data);
-        
-    //     //console.log(columns);
-    //     //console.log(results.data);  
-    //   }
 
   return(
     <div className={classes.root}>
