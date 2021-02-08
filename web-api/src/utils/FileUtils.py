@@ -6,4 +6,4 @@ def GenerateFileName(filename, outExtension):
 
   current = time.mktime(datetime.datetime.now().timetuple())
 
-  return path.splitext(filename)[0] + '_' + str(current) + outExtension
+  return path.splitext(filename)[0] + '_' + str(int(current)) + outExtension
